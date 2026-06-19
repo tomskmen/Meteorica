@@ -880,6 +880,7 @@
       display: flex;
       flex-direction: column;
       box-shadow: var(--shadow);
+      overflow-x: hidden;
     }
 
     .cart-drawer.open .cart-panel {
@@ -904,39 +905,113 @@
       display: grid;
       gap: 10px;
       padding: 16px 0;
-      overflow: auto;
+      overflow-y: auto;
+      overflow-x: hidden;
       flex: 1;
     }
 
     .cart-item {
       display: grid;
-      grid-template-columns: 54px 1fr auto;
+      grid-template-columns: 1fr auto;
       gap: 12px;
-      align-items: center;
+      align-items: end;
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 10px;
+      padding: 14px;
       background: rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: visible;
     }
 
     .cart-thumb {
-      width: 54px;
-      height: 54px;
+      grid-column: 1 / -1;
+      width: 100%;
+      height: var(--cart-image-box, 150px);
       border-radius: 8px;
-      background:
-        radial-gradient(circle at 32% 26%, rgba(255, 230, 162, 0.72), transparent 0 7%, transparent 12%),
-        linear-gradient(135deg, #8c7660, #303339 46%, #15171b 80%);
-      box-shadow: inset -8px -10px 18px rgba(0, 0, 0, 0.54);
+      display: grid;
+      justify-items: center;
+      align-items: start;
+      background: radial-gradient(circle at 50% 52%, rgba(128, 215, 255, 0.1), transparent 58%);
+      overflow: visible;
+      perspective: 700px;
+      position: relative;
+      z-index: 2;
+      margin-bottom: 10px;
+    }
+
+    .cart-thumb img {
+      width: 82%;
+      height: var(--cart-image-height, 132px);
+      object-fit: contain;
+      object-position: center top;
+      transform-origin: center center;
+      filter:
+        drop-shadow(0 12px 16px rgba(0, 0, 0, 0.48))
+        drop-shadow(0 0 10px rgba(128, 215, 255, 0.14));
+      transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), filter 0.55s ease;
+      will-change: transform, filter;
+    }
+
+    .cart-item:hover .cart-thumb img,
+    .cart-thumb:active img {
+      transform: translate3d(0, -10px, 54px) rotateX(5deg) rotateY(-7deg) scale(1.18);
+      filter:
+        drop-shadow(0 22px 24px rgba(0, 0, 0, 0.56))
+        drop-shadow(0 0 18px rgba(128, 215, 255, 0.24))
+        drop-shadow(0 0 12px rgba(240, 185, 91, 0.16));
+    }
+
+    .cart-info {
+      min-width: 0;
+      position: relative;
+      z-index: 3;
+    }
+
+    .cart-items[data-count="1"] .cart-thumb {
+      --cart-image-box: 260px;
+      --cart-image-height: 238px;
+      margin-bottom: 14px;
+    }
+
+    .cart-items[data-count="1"] .cart-thumb img {
+      width: 94%;
+    }
+
+    .cart-items[data-count="2"] .cart-thumb {
+      --cart-image-box: 180px;
+      --cart-image-height: 160px;
+      margin-bottom: 12px;
+    }
+
+    .cart-items[data-count="2"] .cart-thumb img {
+      width: 88%;
+    }
+
+    .cart-items[data-count="3"] .cart-thumb,
+    .cart-items[data-count="4"] .cart-thumb,
+    .cart-items[data-count="5"] .cart-thumb,
+    .cart-items[data-count="6"] .cart-thumb {
+      --cart-image-box: 128px;
+      --cart-image-height: 112px;
+      margin-bottom: 8px;
+    }
+
+    .cart-items[data-count="3"] .cart-thumb img,
+    .cart-items[data-count="4"] .cart-thumb img,
+    .cart-items[data-count="5"] .cart-thumb img,
+    .cart-items[data-count="6"] .cart-thumb img {
+      width: 78%;
     }
 
     .cart-item h3 {
       margin: 0;
-      font-size: 15px;
+      font-size: 18px;
+      line-height: 1.2;
     }
 
     .cart-item span {
       color: var(--muted);
-      font-size: 13px;
+      font-size: 14px;
     }
 
     .remove-item {
@@ -1014,6 +1089,10 @@
     }
 
     @media (max-width: 980px) {
+      .section {
+        padding: 58px 0;
+      }
+
       .nav-links {
         position: fixed;
         top: 72px;
@@ -1040,10 +1119,27 @@
       .hero-inner,
       .delivery-layout {
         grid-template-columns: 1fr;
+        gap: 32px;
       }
 
       .specimen-stage {
-        min-height: 390px;
+        min-height: 360px;
+      }
+
+      .hero h1 {
+        max-width: 760px;
+        font-size: clamp(42px, 9vw, 76px);
+        -webkit-text-stroke-width: 1.5px;
+        text-shadow:
+          3px 4px 0 #4b087c,
+          5px 6px 0 #2c064e,
+          -1px 0 0 #7a21ca,
+          0 1px 0 #7a21ca,
+          0 0 14px rgba(166, 63, 255, 0.3);
+      }
+
+      .hero-copy p {
+        max-width: 720px;
       }
 
       .hero-stats,
@@ -1056,6 +1152,10 @@
         align-items: start;
         flex-direction: column;
       }
+
+      .cart-panel {
+        width: min(480px, 100%);
+      }
     }
 
     @media (max-width: 640px) {
@@ -1064,7 +1164,8 @@
       }
 
       .hero {
-        padding-top: 104px;
+        min-height: auto;
+        padding: 100px 0 52px;
       }
 
       .hero-inner,
@@ -1072,6 +1173,23 @@
       .trust-grid,
       .footer-inner {
         width: min(100% - 24px, 1180px);
+      }
+
+      .hero h1 {
+        font-size: clamp(36px, 15vw, 58px);
+        line-height: 1.02;
+        -webkit-text-stroke-width: 1px;
+        text-shadow:
+          2px 3px 0 #4b087c,
+          4px 5px 0 #2c064e,
+          -1px 0 0 #7a21ca,
+          0 1px 0 #7a21ca,
+          0 0 10px rgba(166, 63, 255, 0.28);
+      }
+
+      .hero-copy p {
+        font-size: 16px;
+        line-height: 1.6;
       }
 
       .hero-actions {
@@ -1090,26 +1208,117 @@
         grid-template-columns: 1fr;
       }
 
+      .catalog-toolbar,
+      .filters {
+        width: 100%;
+      }
+
+      .filter {
+        flex: 1 1 calc(50% - 8px);
+      }
+
+      .sort-select {
+        width: 100%;
+      }
+
+      .product-media {
+        height: 210px;
+      }
+
       .trust-item,
       .trust-item:last-child {
         border: 1px solid var(--line);
       }
 
       .hero-meteorite-image {
-        width: min(390px, 100%);
+        width: min(390px, 96%);
+        max-height: 330px;
       }
 
       .floating-tag {
-        width: 138px;
-        padding: 10px;
+        display: none;
       }
 
-      .floating-tag.top {
-        right: 0;
+      .delivery-panel,
+      .order-panel {
+        padding: 20px;
       }
 
-      .floating-tag.bottom {
-        left: 0;
+      .cart-panel {
+        width: 100%;
+        padding: 16px;
+      }
+
+      .cart-items[data-count="1"] .cart-thumb {
+        --cart-image-box: 220px;
+        --cart-image-height: 200px;
+      }
+
+      .cart-items[data-count="2"] .cart-thumb {
+        --cart-image-box: 156px;
+        --cart-image-height: 138px;
+      }
+
+      .cart-items[data-count="3"] .cart-thumb,
+      .cart-items[data-count="4"] .cart-thumb,
+      .cart-items[data-count="5"] .cart-thumb,
+      .cart-items[data-count="6"] .cart-thumb {
+        --cart-image-box: 112px;
+        --cart-image-height: 96px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .brand {
+        font-size: 15px;
+      }
+
+      .brand-mark {
+        width: 34px;
+        height: 34px;
+      }
+
+      .icon-button {
+        width: 40px;
+        height: 40px;
+      }
+
+      .hero h1 {
+        font-size: clamp(32px, 14vw, 48px);
+      }
+
+      .hero-stats .stat {
+        padding: 12px 0;
+      }
+
+      .product-body {
+        padding: 16px;
+      }
+
+      .meta {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (hover: none), (pointer: coarse) {
+      .btn:hover,
+      .icon-button:hover,
+      .product-card:hover {
+        transform: none;
+      }
+
+      .product-card {
+        overflow: hidden;
+      }
+
+      .product-media {
+        overflow: hidden;
+      }
+
+      .product-card:hover .product-image,
+      .cart-item:hover .cart-thumb img,
+      .cart-thumb:active img {
+        transform: none;
       }
     }
   </style>
@@ -1565,6 +1774,7 @@
       const entries = getCartEntries();
       const totalCount = entries.reduce((sum, item) => sum + item.quantity, 0);
       const totalPrice = entries.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      cartItems.dataset.count = Math.min(entries.length, 6).toString();
 
       cartCount.textContent = totalCount;
       cartTotal.textContent = formatPrice(totalPrice);
@@ -1578,8 +1788,10 @@
 
       cartItems.innerHTML = entries.map((item) => `
         <div class="cart-item">
-          <div class="cart-thumb" aria-hidden="true"></div>
-          <div>
+          <div class="cart-thumb">
+            <img src="${item.image}" alt="${item.name}">
+          </div>
+          <div class="cart-info">
             <h3>${item.name}</h3>
             <span>${item.quantity} шт. · ${formatPrice(item.price * item.quantity)}</span>
           </div>
