@@ -1,2 +1,2 @@
 # Meteorica
-Meteorica продажа метиарита
+Meteorica продажа метеорита
